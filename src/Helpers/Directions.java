@@ -10,4 +10,5 @@ public enum Directions {
     LEFT_UP_DIAGONAL,
     LEFT_DOWN_DIAGONAL,
     KNIGHT,
+    INVALID
 }

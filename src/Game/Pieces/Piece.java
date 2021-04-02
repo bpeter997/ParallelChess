@@ -4,7 +4,6 @@ import java.util.Arrays;
 
 import Game.Table;
 import Helpers.InvalidMove;
-import Helpers.InvalidPiece;
 import Helpers.Point;
 import Helpers.Directions;
 
@@ -17,32 +16,33 @@ public abstract class Piece {
     protected Directions[] enabledDirections;
 
     protected Piece(Point position, Table table, int player, int team) {
+        table.movePieceToPosition(this, position);
         this.position = position;
         this.team = team;
         this.player = player;
         this.table = table;
     }
 
-    public void checkMove(Point newPos, int playerTeam) throws Exception {
-        if (playerTeam != team)
-            throw new InvalidPiece();
+    public void tryMove(Point newPos) throws Exception {
         if (newPos.getX() < 0 || newPos.getX() > Table.ROW_NUMBER)
             throw new InvalidMove();
         if (newPos.getY() < 0 || newPos.getY() > Table.COLUMN_NUMBER)
             throw new InvalidMove();
         if (this.position.getX() == newPos.getX() && this.position.getY() == newPos.getY())
             throw new InvalidMove();
-        Directions actualMoveDirection = this.getMoveDirection(newPos, this.position);
-        if (!Arrays.asList(this.enabledDirections).contains(actualMoveDirection))
+        Directions actualMoveDirection = this.getMoveDirection(newPos);
+        if (!Arrays.asList(this.enabledDirections).contains(actualMoveDirection) || actualMoveDirection == Directions.INVALID)
             throw new InvalidMove();
+        this.move(newPos);
 
     }
 
-    public final void move(Point newPos) {
-
+    private void move(Point newPos) throws Exception {
         Piece p = table.getPieceOnPosition(newPos);
         if (p != null) {
-            System.out.println(p.toString() + " " + p.player + " babuja leutve");
+            if (p.team == this.team) throw new InvalidMove();
+            if (p instanceof King) throw new Exception("You cant kick king!");
+            System.out.println(p.toString() + " " + p.player + " piece kicked!");
         }
 
         table.removePieceFromPosition(position);
@@ -53,24 +53,40 @@ public abstract class Piece {
     protected final void fillEnabledDirectionsArray(Directions[] usableDirections) {
         this.enabledDirections = new Directions[usableDirections.length];
         System.arraycopy(usableDirections, 0, this.enabledDirections, 0, usableDirections.length);
-        System.out.println(usableDirections);
-        System.out.println(this.enabledDirections);
+        System.out.println(Arrays.toString(usableDirections));
+        System.out.println(Arrays.toString(this.enabledDirections));
     }
 
-    private Directions getMoveDirection(Point newPos, Point oldPos) {
+    private Directions getMoveDirection(Point newPos) {
+        Point oldPos = this.position;
         // moving vertically
         if (newPos.getX() == oldPos.getX()) {
-            return getVertivalDirection(newPos, oldPos);
-            // moving horisontally
+            return getVerticalDirection(newPos, oldPos);
+            // moving horizontally
         } else if (newPos.getY() == oldPos.getY()) {
-            return getHorisontallyDirection(newPos, oldPos);
+            return getHorizontallyDirection(newPos, oldPos);
             // moving diagonally
         } else {
-            return getDiagonalDirection(newPos, oldPos);
+            return getOtherDirection(newPos, oldPos);
         }
     }
 
-    private Directions getDiagonalDirection(Point newPos, Point oldPos) {
+    private Directions getOtherDirection(Point newPos, Point oldPos) {
+        if (Math.abs(newPos.getX() - oldPos.getX()) == Math.abs(newPos.getY() - oldPos.getY())) {
+            return getDiagonalDirections(newPos, oldPos);
+        } else {
+            return getKnightDirection(newPos, oldPos);
+        }
+    }
+
+    private Directions getKnightDirection(Point newPos, Point oldPos) {
+       if ((Math.abs(newPos.getX() - oldPos.getX()) == 2 && Math.abs(newPos.getY() - oldPos.getY()) == 1) || (Math.abs(newPos.getX() - oldPos.getX()) == 1 && Math.abs(newPos.getY() - oldPos.getY()) == 2)) {
+           return Directions.KNIGHT;
+       }
+       return Directions.INVALID;
+    }
+
+    private Directions getDiagonalDirections(Point newPos, Point oldPos) {
         if (newPos.getX() > oldPos.getX()) {
             if (newPos.getY() > oldPos.getY()) {
                 return (this.team == 1) ? Directions.LEFT_UP_DIAGONAL : Directions.RIGHT_DOWN_DIAGONAL;
@@ -86,7 +102,7 @@ public abstract class Piece {
         }
     }
 
-    private Directions getHorisontallyDirection(Point newPos, Point oldPos) {
+    private Directions getHorizontallyDirection(Point newPos, Point oldPos) {
         if (newPos.getX() > oldPos.getX()) {
             return (this.team == 1) ? Directions.LEFT : Directions.RIGHT;
         } else {
@@ -94,7 +110,7 @@ public abstract class Piece {
         }
     }
 
-    private Directions getVertivalDirection(Point newPos, Point oldPos) {
+    private Directions getVerticalDirection(Point newPos, Point oldPos) {
         if (newPos.getY() > oldPos.getY()) {
             return (this.team == 1) ? Directions.UP : Directions.DOWN;
         } else {
@@ -107,4 +123,7 @@ public abstract class Piece {
         return super.toString();
     }
 
+    public int getPlayer() {
+        return player;
+    }
 }
