@@ -15,7 +15,46 @@ public class Pawn extends Piece {
             tempArr = new Directions[]{Directions.UP, Directions.RIGHT_UP_DIAGONAL, Directions.LEFT_UP_DIAGONAL};
         }
         this.fillEnabledDirectionsArray(tempArr);
-        this.calcPossibleMoveCoordinates();
+    }
+
+    @Override
+    protected void getPossibleDownPositions() {
+        checkPosition(this.position.getX() + 1, this.position.getY());
+    }
+
+    @Override
+    protected void getPossibleUpPositions() {
+        checkPosition(this.position.getX() - 1, this.position.getY());
+    }
+
+    @Override
+    protected void getPossibleLeftDownPositions() {
+        if (checkPosition(this.position.getX() + 1, this.position.getY() - 1)) return;
+        if (!isDiagonalMoveKick(this.position.getX() + 1, this.position.getY() - 1)) this.possibleMoveCoordinates.remove(this.possibleMoveCoordinates.size()-1);
+    }
+
+    @Override
+    protected void getPossibleLeftUpPositions() {
+        if (checkPosition(this.position.getX() - 1, this.position.getY() - 1)) return;
+        if (!isDiagonalMoveKick(this.position.getX() - 1, this.position.getY() - 1)) this.possibleMoveCoordinates.remove(this.possibleMoveCoordinates.size()-1);
+    }
+
+    @Override
+    protected void getPossibleRightUpPositions() {
+        if (checkPosition(this.position.getX() - 1, this.position.getY() + 1)) return;
+        if (!isDiagonalMoveKick(this.position.getX() - 1, this.position.getY() + 1)) this.possibleMoveCoordinates.remove(this.possibleMoveCoordinates.size()-1);
+    }
+
+    @Override
+    protected void getPossibleRightDownPositions() {
+        if (checkPosition(this.position.getX() + 1, this.position.getY() + 1)) return;
+        if (!isDiagonalMoveKick(this.position.getX() + 1, this.position.getY() + 1)) this.possibleMoveCoordinates.remove(this.possibleMoveCoordinates.size()-1);
+
+    }
+
+    private boolean isDiagonalMoveKick(int x,int y) {
+        Piece p = table.getPieceOnPosition(new Point(x,y));
+        return p != null && p.team != this.team;
     }
 
     @Override

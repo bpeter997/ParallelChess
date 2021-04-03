@@ -9,6 +9,10 @@ public class Point {
         this.y = y;
     }
 
+    public boolean isEqual(Point other) {
+        return (this.getX() == other.getX()) && (this.getY() == other.getY());
+    }
+
     public int getX() {
         return x;
     }

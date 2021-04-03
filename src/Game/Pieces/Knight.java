@@ -10,7 +10,6 @@ public class Knight extends Piece {
         super(position, table, player, team);
         Directions[] tempArr = {Directions.KNIGHT};
         this.fillEnabledDirectionsArray(tempArr);
-        this.calcPossibleMoveCoordinates();
     }
 
     @Override

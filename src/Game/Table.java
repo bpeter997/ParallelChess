@@ -65,6 +65,7 @@ public class Table {
         this.initPlayer(2, 2, 6, 7, 0);
         this.initPlayer(3, 1, 1, 0, 8);
         this.initPlayer(4, 2, 6, 7, 8);
+        this.recalculatePossibleMoves();
     }
 
     private void initPlayer(int player, int team, int pawnLineStartIndex, int otherLineStartIndex, int columnStartIndex) {

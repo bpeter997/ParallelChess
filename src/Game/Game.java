@@ -31,10 +31,10 @@ public class Game {
         Scanner sc = new Scanner(System.in);
         boolean successFullPic = false;
         while (!successFullPic) {
-            System.out.println("Pick a piece! (x,y)");
-            System.out.println("");
-            Point position = getPointFromUserINPUT(sc);
             try {
+                System.out.println("Pick a piece! (x,y)");
+                System.out.println("");
+                Point position = getPointFromUserINPUT(sc);
                 selectedPiece = table.pickPiece(player, position);
                 successFullPic = true;
             } catch (Exception e) {

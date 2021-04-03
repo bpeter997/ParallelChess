@@ -10,7 +10,6 @@ public class Bishop extends Piece {
         Directions[] tempArr = {Directions.LEFT_DOWN_DIAGONAL, Directions.LEFT_UP_DIAGONAL,
                 Directions.RIGHT_DOWN_DIAGONAL, Directions.RIGHT_UP_DIAGONAL};
         this.fillEnabledDirectionsArray(tempArr);
-        this.calcPossibleMoveCoordinates();
     }
 
     @Override

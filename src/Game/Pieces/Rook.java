@@ -11,7 +11,6 @@ public class Rook extends Piece {
         Directions[] tempArr = { Directions.DOWN, Directions.LEFT,
                 Directions.RIGHT, Directions.UP };
         this.fillEnabledDirectionsArray(tempArr);
-        this.calcPossibleMoveCoordinates();
     }
 
     @Override

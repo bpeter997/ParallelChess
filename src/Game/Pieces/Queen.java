@@ -12,7 +12,6 @@ public class Queen extends Piece {
                 Directions.RIGHT_DOWN_DIAGONAL, Directions.RIGHT_UP_DIAGONAL, Directions.DOWN, Directions.LEFT,
                 Directions.RIGHT, Directions.UP};
         this.fillEnabledDirectionsArray(tempArr);
-        this.calcPossibleMoveCoordinates();
     }
 
     @Override
