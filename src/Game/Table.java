@@ -1,6 +1,6 @@
 package Game;
-import Game.Pieces.Piece;
-import Game.Pieces.Rook;
+
+import Game.Pieces.*;
 import Helpers.InvalidPiece;
 import Helpers.Point;
 
@@ -26,16 +26,19 @@ public class Table {
     public Piece pickPiece(int playerNumber, Point position) throws Exception {
         Piece piece = this.getPieceOnPosition(position);
         if (piece == null) throw new Exception("Empty field!");
+        System.out.println(piece.getPossibleMoveCoordinates());
+        if (piece.getPossibleMoveCoordinates().size() == 0) throw new Exception("You cant move this piece!");
         System.out.println("piece player:  " + piece.getPlayer() + "   parameter player:  " + playerNumber);
         if (piece.getPlayer() != playerNumber) throw new InvalidPiece();
         return piece;
     }
 
-    public Piece getPieceOnPosition(Point position) { 
+    public Piece getPieceOnPosition(Point position) {
         return table[position.getX()][position.getY()];
     }
 
     public void movePieceToPosition(Piece piece, Point position) {
+        piece.setPosition(position);
         table[position.getX()][position.getY()] = piece;
     }
 
@@ -58,10 +61,24 @@ public class Table {
     }
 
     private void fillTable() {
-        new Rook(new Point(0,0), this, 1, 1);
-        new Rook(new Point(0,15), this, 2, 1);
-        new Rook(new Point(7,0), this, 3, 2);
-        new Rook(new Point(7,15), this, 4, 2);
+        this.initPlayer(1, 1, 1, 0, 0);
+        this.initPlayer(2, 2, 6, 7, 0);
+        this.initPlayer(3, 1, 1, 0, 8);
+        this.initPlayer(4, 2, 6, 7, 8);
+    }
+
+    private void initPlayer(int player, int team, int pawnLineStartIndex, int otherLineStartIndex, int columnStartIndex) {
+        for (int i = columnStartIndex; i < columnStartIndex + 8; i++) {
+            new Pawn(new Point(pawnLineStartIndex, i), this, player, team);
+        }
+        new Rook(new Point(otherLineStartIndex, columnStartIndex), this, player, team);
+        new Knight(new Point(otherLineStartIndex, columnStartIndex + 1), this, player, team);
+        new Bishop(new Point(otherLineStartIndex, columnStartIndex + 2), this, player, team);
+        new Queen(new Point(otherLineStartIndex, columnStartIndex + 3), this, player, team);
+        new King(new Point(otherLineStartIndex, columnStartIndex + 4), this, player, team);
+        new Bishop(new Point(otherLineStartIndex, columnStartIndex + 5), this, player, team);
+        new Knight(new Point(otherLineStartIndex, columnStartIndex + 6), this, player, team);
+        new Rook(new Point(otherLineStartIndex, columnStartIndex + 7), this, player, team);
     }
 
     public static Table getInstance() {
@@ -71,4 +88,12 @@ public class Table {
         return INSTANCE;
     }
 
+    public void recalculatePossibleMoves() {
+        for (int i = 0; i < this.table.length; i++) {
+            for (int j = 0; j < this.table[i].length; j++) {
+                Piece piece = this.getPieceOnPosition(new Point(i,j));
+                if (piece != null) piece.calcPossibleMoveCoordinates();
+            }
+        }
+    }
 }

@@ -51,6 +51,7 @@ public class Game {
                 selectedPiece.tryMove(position);
                 successFullMove = true;
                 table.drawTable();
+                table.recalculatePossibleMoves();
             } catch (Exception e) {
                 System.out.println(e.toString());
             }

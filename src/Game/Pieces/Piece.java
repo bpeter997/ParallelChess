@@ -1,5 +1,6 @@
 package Game.Pieces;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import Game.Table;
@@ -15,12 +16,15 @@ public abstract class Piece {
     protected Table table;
     protected Directions[] enabledDirections;
 
+    protected ArrayList<Point> possibleMoveCoordinates;
+
     protected Piece(Point position, Table table, int player, int team) {
         table.movePieceToPosition(this, position);
         this.position = position;
         this.team = team;
         this.player = player;
         this.table = table;
+        this.possibleMoveCoordinates = new ArrayList<Point>();
     }
 
     public void tryMove(Point newPos) throws Exception {
@@ -33,6 +37,7 @@ public abstract class Piece {
         Directions actualMoveDirection = this.getMoveDirection(newPos);
         if (!Arrays.asList(this.enabledDirections).contains(actualMoveDirection) || actualMoveDirection == Directions.INVALID)
             throw new InvalidMove();
+        if (!this.possibleMoveCoordinates.contains(newPos)) throw new InvalidMove();
         this.move(newPos);
 
     }
@@ -42,9 +47,8 @@ public abstract class Piece {
         if (p != null) {
             if (p.team == this.team) throw new InvalidMove();
             if (p instanceof King) throw new Exception("You cant kick king!");
-            System.out.println(p.toString() + " " + p.player + " piece kicked!");
+            System.out.println(p.toString() + " piece kicked!");
         }
-
         table.removePieceFromPosition(position);
         table.removePieceFromPosition(newPos);
         table.movePieceToPosition(this, newPos);
@@ -53,8 +57,6 @@ public abstract class Piece {
     protected final void fillEnabledDirectionsArray(Directions[] usableDirections) {
         this.enabledDirections = new Directions[usableDirections.length];
         System.arraycopy(usableDirections, 0, this.enabledDirections, 0, usableDirections.length);
-        System.out.println(Arrays.toString(usableDirections));
-        System.out.println(Arrays.toString(this.enabledDirections));
     }
 
     private Directions getMoveDirection(Point newPos) {
@@ -80,10 +82,10 @@ public abstract class Piece {
     }
 
     private Directions getKnightDirection(Point newPos, Point oldPos) {
-       if ((Math.abs(newPos.getX() - oldPos.getX()) == 2 && Math.abs(newPos.getY() - oldPos.getY()) == 1) || (Math.abs(newPos.getX() - oldPos.getX()) == 1 && Math.abs(newPos.getY() - oldPos.getY()) == 2)) {
-           return Directions.KNIGHT;
-       }
-       return Directions.INVALID;
+        if ((Math.abs(newPos.getX() - oldPos.getX()) == 2 && Math.abs(newPos.getY() - oldPos.getY()) == 1) || (Math.abs(newPos.getX() - oldPos.getX()) == 1 && Math.abs(newPos.getY() - oldPos.getY()) == 2)) {
+            return Directions.KNIGHT;
+        }
+        return Directions.INVALID;
     }
 
     private Directions getDiagonalDirections(Point newPos, Point oldPos) {
@@ -118,6 +120,101 @@ public abstract class Piece {
         }
     }
 
+    public void calcPossibleMoveCoordinates() {
+        this.possibleMoveCoordinates.clear();
+        for (Directions enabledDirection : this.enabledDirections) {
+            switch (enabledDirection) {
+                case KNIGHT -> this.getPossibleKnightPositions();
+                case DOWN -> this.getPossibleDownPositions();
+                case LEFT -> this.getPossibleLeftPositions();
+                case UP -> this.getPossibleUpPositions();
+                case RIGHT -> this.getPossibleRightPositions();
+                case LEFT_DOWN_DIAGONAL -> this.getPossibleLeftDownPositions();
+                case LEFT_UP_DIAGONAL -> this.getPossibleLeftUpPositions();
+                case RIGHT_UP_DIAGONAL -> this.getPossibleRightUpPositions();
+                case RIGHT_DOWN_DIAGONAL -> this.getPossibleRightDownPositions();
+                default -> throw new IllegalStateException("Unexpected value: " + enabledDirection);
+            }
+        }
+    }
+
+    private void getPossibleKnightPositions() {
+        this.addPointToList(new Point(position.getX() + 1, position.getY() + 2));
+        this.addPointToList(new Point(position.getX() + 1, position.getY() - 2));
+        this.addPointToList(new Point(position.getX() - 1, position.getY() - 2));
+        this.addPointToList(new Point(position.getX() - 1, position.getY() + 2));
+        this.addPointToList(new Point(position.getX() + 2, position.getY() + 1));
+        this.addPointToList(new Point(position.getX() + 2, position.getY() - 1));
+        this.addPointToList(new Point(position.getX() - 2, position.getY() - 1));
+        this.addPointToList(new Point(position.getX() - 2, position.getY() + 1));
+    }
+
+    private void getPossibleDownPositions() {
+        for (int i = this.position.getX() + 1; i < Table.ROW_NUMBER; i++) {
+            if (checkPosition(i, this.position.getY())) break;
+        }
+    }
+
+    private void getPossibleUpPositions() {
+        for (int i = this.position.getX() - 1; i >= 0; i--) {
+            if (checkPosition(i, this.position.getY())) break;
+        }
+    }
+
+    private void getPossibleLeftPositions() {
+        for (int i = this.position.getY() - 1; i >= 0; i--) {
+            if (checkPosition(this.position.getX(), i)) break;
+        }
+    }
+
+    private void getPossibleRightPositions() {
+        for (int i = this.position.getY() + 1; i < Table.COLUMN_NUMBER; i++) {
+            if (checkPosition(this.position.getX(), i)) break;
+        }
+    }
+
+    private void getPossibleLeftDownPositions() {
+        int minIndex = Math.min(Table.ROW_NUMBER - this.position.getX(), Table.COLUMN_NUMBER - (Table.COLUMN_NUMBER - this.position.getY()));
+        for (int i = 0; i < minIndex; i++) {
+            if (checkPosition(this.position.getX() + i, this.position.getY() - i)) break;
+        }
+    }
+
+    private void getPossibleLeftUpPositions() {
+        int minIndex = Math.min(Table.ROW_NUMBER - (Table.ROW_NUMBER - this.position.getX()), Table.COLUMN_NUMBER - (Table.COLUMN_NUMBER - this.position.getY()));
+        for (int i = 0; i < minIndex; i++) {
+            if (checkPosition(this.position.getX() - i, this.position.getY() - i)) break;
+        }
+    }
+
+    private void getPossibleRightUpPositions() {
+        int minIndex = Math.min(Table.ROW_NUMBER - (Table.ROW_NUMBER - this.position.getX()), Table.COLUMN_NUMBER - this.position.getY());
+        for (int i = 0; i < minIndex; i++) {
+            if (checkPosition(this.position.getX() - i, this.position.getY() + i)) break;
+        }
+    }
+
+    private void getPossibleRightDownPositions() {
+        int minIndex = Math.min(Table.ROW_NUMBER - this.position.getX(), Table.COLUMN_NUMBER - this.position.getY());
+        for (int i = 0; i < minIndex; i++) {
+            if (checkPosition(this.position.getX() + i, this.position.getY() + i)) break;
+        }
+    }
+
+    private boolean checkPosition(int x, int y) {
+        Point actualPos = new Point(x, y);
+        Piece piece = table.getPieceOnPosition(actualPos);
+        if (piece != null && piece.team == this.team) return true;
+        this.addPointToList(actualPos);
+        return piece != null;
+    }
+
+    protected void addPointToList(Point position) {
+        if (position.getX() >= 0 && position.getX() < Table.ROW_NUMBER && position.getY() >= 0 && position.getY() < Table.COLUMN_NUMBER) {
+            this.possibleMoveCoordinates.add(position);
+        }
+    }
+
     @Override
     public String toString() {
         return super.toString();
@@ -125,5 +222,17 @@ public abstract class Piece {
 
     public int getPlayer() {
         return player;
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
+    public ArrayList<Point> getPossibleMoveCoordinates() {
+        return possibleMoveCoordinates;
     }
 }
