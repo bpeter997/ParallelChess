@@ -1,6 +1,7 @@
 package Game;
 
 import Game.Pieces.Piece;
+import Helpers.Exceptions.Winner;
 import Helpers.Point;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,7 +13,7 @@ public class Game {
 
     private final Table table;
 
-    private Game() {
+    private Game() throws Winner {
         this.table = Table.getInstance();
     }
 
@@ -20,7 +21,12 @@ public class Game {
         table.drawTable();
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                this.handle_round(j+1);
+                try {
+                    this.handle_round(j+1);
+                } catch (Winner w) {
+                    System.out.println(w);
+                    return;
+                }
             }
         }
     }
@@ -52,6 +58,8 @@ public class Game {
                 successFullMove = true;
                 table.drawTable();
                 table.recalculatePossibleMoves();
+            } catch (Winner w) {
+                throw w;
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
@@ -68,7 +76,7 @@ public class Game {
         return new Point(x,y);
     }
 
-    public static Game getInstance() {
+    public static Game getInstance() throws Winner {
         if (INSTANCE == null) {
             INSTANCE = new Game();
         }

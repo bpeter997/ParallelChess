@@ -3,7 +3,7 @@ package Game.Pieces;
 import java.util.ArrayList;
 
 import Game.Table;
-import Helpers.InvalidMove;
+import Helpers.Exceptions.InvalidMove;
 import Helpers.Point;
 import Helpers.Directions;
 

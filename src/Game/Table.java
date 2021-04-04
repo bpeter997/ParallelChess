@@ -1,7 +1,8 @@
 package Game;
 
 import Game.Pieces.*;
-import Helpers.InvalidPiece;
+import Helpers.Exceptions.InvalidPiece;
+import Helpers.Exceptions.Winner;
 import Helpers.Point;
 
 public class Table {
@@ -14,7 +15,7 @@ public class Table {
     private final Piece[][] table;
     private final King[] kings;
 
-    private Table() {
+    private Table() throws Winner {
         kings = new King[4];
         table = new Piece[ROW_NUMBER][COLUMN_NUMBER];
         for (int i = 0; i < table.length; i++) {
@@ -28,8 +29,6 @@ public class Table {
     public Piece pickPiece(int playerNumber, Point position) throws Exception {
         Piece piece = this.getPieceOnPosition(position);
         if (piece == null) throw new Exception("Empty field!");
-        King actualKing = kings[playerNumber-1];
-        if (actualKing.isInCheck())
         System.out.println(piece.getPossibleMoveCoordinates());
         if (piece.getPossibleMoveCoordinates().size() == 0) throw new Exception("You cant move this piece!");
         System.out.println("piece player:  " + piece.getPlayer() + "   parameter player:  " + playerNumber);
@@ -64,7 +63,7 @@ public class Table {
         System.out.println("\n");
     }
 
-    private void fillTable() {
+    private void fillTable() throws Winner {
         this.initPlayer(1, 1, 1, 0, 0);
         this.initPlayer(2, 2, 6, 7, 0);
         this.initPlayer(3, 1, 1, 0, 8);
@@ -86,14 +85,19 @@ public class Table {
         new Rook(new Point(otherLineStartIndex, columnStartIndex + 7), this, player, team);
     }
 
-    public static Table getInstance() {
+    public static Table getInstance() throws Winner {
         if (INSTANCE == null) {
             INSTANCE = new Table();
         }
         return INSTANCE;
     }
 
-    public void recalculatePossibleMoves() {
+    public void recalculatePossibleMoves() throws Winner {
+        int player1PossibleMoves = 0;
+        int player2PossibleMoves = 0;
+        int player3PossibleMoves = 0;
+        int player4PossibleMoves = 0;
+
         for (King king : kings) {
             king.setInCheck(false);
             king.getCheckZone().clear();
@@ -101,9 +105,16 @@ public class Table {
         for (int i = 0; i < this.table.length; i++) {
             for (int j = 0; j < this.table[i].length; j++) {
                 Piece piece = this.getPieceOnPosition(new Point(i,j));
-                if (piece != null) piece.calcPossibleMoveCoordinates();
+                if (piece == null) continue;
+                piece.calcPossibleMoveCoordinates();
+                if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == 1) player1PossibleMoves++;
+                if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == 2) player2PossibleMoves++;
+                if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == 3) player3PossibleMoves++;
+                if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == 4) player4PossibleMoves++;
             }
         }
+        if (player1PossibleMoves == 0 || player3PossibleMoves == 0) throw new Winner(1);
+        if (player2PossibleMoves == 0 || player4PossibleMoves == 0) throw new Winner(2);
     }
 
     public King[] getKings() {

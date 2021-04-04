@@ -1,4 +1,4 @@
-package Helpers;
+package Helpers.Exceptions;
 
 public class InvalidPiece extends Exception {
 
