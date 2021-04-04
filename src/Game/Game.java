@@ -16,7 +16,7 @@ public class Game {
         this.table = Table.getInstance();
     }
 
-    public void startGame() {
+    public void startGame() throws Exception {
         table.drawTable();
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -25,7 +25,7 @@ public class Game {
         }
     }
 
-    private void handle_round(int player) {
+    private void handle_round(int player) throws Exception {
         // pick piece
         Piece selectedPiece = null;
         Scanner sc = new Scanner(System.in);
@@ -59,9 +59,10 @@ public class Game {
     }
 
     @NotNull
-    private Point getPointFromUserINPUT(Scanner sc) {
+    private Point getPointFromUserINPUT(Scanner sc) throws Exception {
         String posString = sc.nextLine();
         String[] parts = posString.split(",");
+        if (parts.length != 2) throw new Exception("Invalid coordinates!");
         int x = Integer.parseInt(parts[0]);
         int y = Integer.parseInt(parts[1]);
         return new Point(x,y);

@@ -19,35 +19,35 @@ public class Pawn extends Piece {
 
     @Override
     protected void getPossibleDownPositions() {
-        checkPosition(this.position.getX() + 1, this.position.getY());
+        checkPosition(this.position.getX() + 1, this.position.getY(), null);
     }
 
     @Override
     protected void getPossibleUpPositions() {
-        checkPosition(this.position.getX() - 1, this.position.getY());
+        checkPosition(this.position.getX() - 1, this.position.getY(), null);
     }
 
     @Override
     protected void getPossibleLeftDownPositions() {
-        if (checkPosition(this.position.getX() + 1, this.position.getY() - 1)) return;
+        if (checkPosition(this.position.getX() + 1, this.position.getY() - 1, null)) return;
         if (!isDiagonalMoveKick(this.position.getX() + 1, this.position.getY() - 1)) this.possibleMoveCoordinates.remove(this.possibleMoveCoordinates.size()-1);
     }
 
     @Override
     protected void getPossibleLeftUpPositions() {
-        if (checkPosition(this.position.getX() - 1, this.position.getY() - 1)) return;
+        if (checkPosition(this.position.getX() - 1, this.position.getY() - 1, null)) return;
         if (!isDiagonalMoveKick(this.position.getX() - 1, this.position.getY() - 1)) this.possibleMoveCoordinates.remove(this.possibleMoveCoordinates.size()-1);
     }
 
     @Override
     protected void getPossibleRightUpPositions() {
-        if (checkPosition(this.position.getX() - 1, this.position.getY() + 1)) return;
+        if (checkPosition(this.position.getX() - 1, this.position.getY() + 1, null)) return;
         if (!isDiagonalMoveKick(this.position.getX() - 1, this.position.getY() + 1)) this.possibleMoveCoordinates.remove(this.possibleMoveCoordinates.size()-1);
     }
 
     @Override
     protected void getPossibleRightDownPositions() {
-        if (checkPosition(this.position.getX() + 1, this.position.getY() + 1)) return;
+        if (checkPosition(this.position.getX() + 1, this.position.getY() + 1, null)) return;
         if (!isDiagonalMoveKick(this.position.getX() + 1, this.position.getY() + 1)) this.possibleMoveCoordinates.remove(this.possibleMoveCoordinates.size()-1);
 
     }

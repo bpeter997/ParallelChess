@@ -12,8 +12,10 @@ public class Table {
     private static Table INSTANCE = null;
 
     private final Piece[][] table;
+    private final King[] kings;
 
     private Table() {
+        kings = new King[4];
         table = new Piece[ROW_NUMBER][COLUMN_NUMBER];
         for (int i = 0; i < table.length; i++) {
             for (int j = 0; j < table.length; j++) {
@@ -26,6 +28,8 @@ public class Table {
     public Piece pickPiece(int playerNumber, Point position) throws Exception {
         Piece piece = this.getPieceOnPosition(position);
         if (piece == null) throw new Exception("Empty field!");
+        King actualKing = kings[playerNumber-1];
+        if (actualKing.isInCheck())
         System.out.println(piece.getPossibleMoveCoordinates());
         if (piece.getPossibleMoveCoordinates().size() == 0) throw new Exception("You cant move this piece!");
         System.out.println("piece player:  " + piece.getPlayer() + "   parameter player:  " + playerNumber);
@@ -74,9 +78,9 @@ public class Table {
         }
         new Rook(new Point(otherLineStartIndex, columnStartIndex), this, player, team);
         new Knight(new Point(otherLineStartIndex, columnStartIndex + 1), this, player, team);
+        kings[player-1] = new King(new Point(otherLineStartIndex, columnStartIndex + 4), this, player, team);
         new Bishop(new Point(otherLineStartIndex, columnStartIndex + 2), this, player, team);
         new Queen(new Point(otherLineStartIndex, columnStartIndex + 3), this, player, team);
-        new King(new Point(otherLineStartIndex, columnStartIndex + 4), this, player, team);
         new Bishop(new Point(otherLineStartIndex, columnStartIndex + 5), this, player, team);
         new Knight(new Point(otherLineStartIndex, columnStartIndex + 6), this, player, team);
         new Rook(new Point(otherLineStartIndex, columnStartIndex + 7), this, player, team);
@@ -90,11 +94,19 @@ public class Table {
     }
 
     public void recalculatePossibleMoves() {
+        for (King king : kings) {
+            king.setInCheck(false);
+            king.getCheckZone().clear();
+        }
         for (int i = 0; i < this.table.length; i++) {
             for (int j = 0; j < this.table[i].length; j++) {
                 Piece piece = this.getPieceOnPosition(new Point(i,j));
                 if (piece != null) piece.calcPossibleMoveCoordinates();
             }
         }
+    }
+
+    public King[] getKings() {
+        return kings;
     }
 }

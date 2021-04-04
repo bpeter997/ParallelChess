@@ -1,7 +1,6 @@
 package Game.Pieces;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import Game.Table;
 import Helpers.InvalidMove;
@@ -37,7 +36,7 @@ public abstract class Piece {
         //Directions actualMoveDirection = this.getMoveDirection(newPos);
 //        if (!Arrays.asList(this.enabledDirections).contains(actualMoveDirection) || actualMoveDirection == Directions.INVALID)
 //            throw new InvalidMove();
-        if (!this.isPossibleValue(newPos)) throw new InvalidMove();
+        if (!this.isPossibleValue(newPos, this.possibleMoveCoordinates)) throw new InvalidMove();
         this.move(newPos);
 
     }
@@ -54,8 +53,8 @@ public abstract class Piece {
         table.movePieceToPosition(this, newPos);
     }
 
-    private boolean isPossibleValue(Point value) {
-        for (Point possibleMoveCoordinate : this.possibleMoveCoordinates) {
+    private boolean isPossibleValue(Point value, ArrayList<Point> arrayList) {
+        for (Point possibleMoveCoordinate : arrayList) {
             if (value.isEqual(possibleMoveCoordinate)) return true;
         }
         return false;
@@ -146,79 +145,112 @@ public abstract class Piece {
     }
 
     private void getPossibleKnightPositions() {
-        this.checkPosition(position.getX() + 1, position.getY() + 2);
-        this.checkPosition(position.getX() + 1, position.getY() - 2);
-        this.checkPosition(position.getX() - 1, position.getY() - 2);
-        this.checkPosition(position.getX() - 1, position.getY() + 2);
-        this.checkPosition(position.getX() + 2, position.getY() + 1);
-        this.checkPosition(position.getX() + 2, position.getY() - 1);
-        this.checkPosition(position.getX() - 2, position.getY() - 1);
-        this.checkPosition(position.getX() - 2, position.getY() + 1);
+        this.checkPosition(position.getX() + 1, position.getY() + 2, null);
+        this.checkPosition(position.getX() + 1, position.getY() - 2, null);
+        this.checkPosition(position.getX() - 1, position.getY() - 2, null);
+        this.checkPosition(position.getX() - 1, position.getY() + 2, null);
+        this.checkPosition(position.getX() + 2, position.getY() + 1, null);
+        this.checkPosition(position.getX() + 2, position.getY() - 1, null);
+        this.checkPosition(position.getX() - 2, position.getY() - 1, null);
+        this.checkPosition(position.getX() - 2, position.getY() + 1, null);
     }
 
     protected void getPossibleDownPositions() {
+        ArrayList<Point> tempPoints = new ArrayList<Point>();
         for (int i = this.position.getX() + 1; i < Table.ROW_NUMBER; i++) {
-            if (checkPosition(i, this.position.getY())) break;
+            Point p = new Point(i, this.position.getY());
+            tempPoints.add(p);
+            if (checkPosition(i, this.position.getY(), tempPoints)) break;
         }
     }
 
     protected void getPossibleUpPositions() {
+        ArrayList<Point> tempPoints = new ArrayList<Point>();
         for (int i = this.position.getX() - 1; i >= 0; i--) {
-            if (checkPosition(i, this.position.getY())) break;
+            Point p = new Point(i, this.position.getY());
+            tempPoints.add(p);
+            if (checkPosition(i, this.position.getY(), tempPoints)) break;
         }
     }
 
     protected void getPossibleLeftPositions() {
+        ArrayList<Point> tempPoints = new ArrayList<Point>();
         for (int i = this.position.getY() - 1; i >= 0; i--) {
-            if (checkPosition(this.position.getX(), i)) break;
+            Point p = new Point(this.position.getX(), i);
+            tempPoints.add(p);
+            if (checkPosition(this.position.getX(), i, tempPoints)) break;
         }
     }
 
     protected void getPossibleRightPositions() {
+        ArrayList<Point> tempPoints = new ArrayList<Point>();
         for (int i = this.position.getY() + 1; i < Table.COLUMN_NUMBER; i++) {
-            if (checkPosition(this.position.getX(), i)) break;
+            Point p = new Point(this.position.getX(), i);
+            tempPoints.add(p);
+            if (checkPosition(this.position.getX(), i, tempPoints)) break;
         }
     }
 
     protected void getPossibleLeftDownPositions() {
         int minIndex = Math.min(Table.ROW_NUMBER - this.position.getX(), Table.COLUMN_NUMBER - (Table.COLUMN_NUMBER - this.position.getY()));
+        ArrayList<Point> tempPoints = new ArrayList<Point>();
         for (int i = 0; i < minIndex; i++) {
-            if (checkPosition(this.position.getX() + i, this.position.getY() - i)) break;
+            Point p = new Point(this.position.getX() + i, this.position.getY() - i);
+            tempPoints.add(p);
+            if (checkPosition(this.position.getX() + i, this.position.getY() - i, tempPoints)) break;
         }
     }
 
     protected void getPossibleLeftUpPositions() {
         int minIndex = Math.min(Table.ROW_NUMBER - (Table.ROW_NUMBER - this.position.getX()), Table.COLUMN_NUMBER - (Table.COLUMN_NUMBER - this.position.getY()));
+        ArrayList<Point> tempPoints = new ArrayList<Point>();
         for (int i = 0; i < minIndex; i++) {
-            if (checkPosition(this.position.getX() - i, this.position.getY() - i)) break;
+            Point p = new Point(this.position.getX() - i, this.position.getY() - i);
+            tempPoints.add(p);
+            if (checkPosition(this.position.getX() - i, this.position.getY() - i, tempPoints)) break;
         }
     }
 
     protected void getPossibleRightUpPositions() {
         int minIndex = Math.min(Table.ROW_NUMBER - (Table.ROW_NUMBER - this.position.getX()), Table.COLUMN_NUMBER - this.position.getY());
+        ArrayList<Point> tempPoints = new ArrayList<Point>();
         for (int i = 0; i < minIndex; i++) {
-            if (checkPosition(this.position.getX() - i, this.position.getY() + i)) break;
+            Point p = new Point(this.position.getX() - i, this.position.getY() + i);
+            tempPoints.add(p);
+            if (checkPosition(this.position.getX() - i, this.position.getY() + i, tempPoints)) break;
         }
     }
 
     protected void getPossibleRightDownPositions() {
         int minIndex = Math.min(Table.ROW_NUMBER - this.position.getX(), Table.COLUMN_NUMBER - this.position.getY());
+        ArrayList<Point> tempPoints = new ArrayList<Point>();
         for (int i = 0; i < minIndex; i++) {
-            if (checkPosition(this.position.getX() + i, this.position.getY() + i)) break;
+            Point p = new Point(this.position.getX() + i, this.position.getY() + i);
+            tempPoints.add(p);
+            if (checkPosition(this.position.getX() + i, this.position.getY() + i, tempPoints)) break;
         }
     }
 
-    protected boolean checkPosition(int x, int y) {
+    protected boolean checkPosition(int x, int y, ArrayList<Point> tempPoints) {
         if (x < 0 || x > 7 || y < 0 || y > 15) return true;
         Point actualPos = new Point(x, y);
         Piece piece = table.getPieceOnPosition(actualPos);
         if (piece != null && piece.team == this.team) return true;
+        if (piece instanceof King) {
+            ((King) piece).setInCheck(true);
+            if (tempPoints == null) tempPoints = new ArrayList<Point>();
+            tempPoints.add(this.position);
+            ((King) piece).setCheckZone(new ArrayList<Point>(tempPoints));
+            return true;
+        }
         this.addPointToList(actualPos);
         return piece != null;
     }
 
     protected void addPointToList(Point position) {
         if (position.getX() >= 0 && position.getX() < Table.ROW_NUMBER && position.getY() >= 0 && position.getY() < Table.COLUMN_NUMBER) {
+            King myKing = table.getKings()[this.player-1];
+            if (myKing.isInCheck() && !this.isPossibleValue(position, myKing.getCheckZone())) return;
             this.possibleMoveCoordinates.add(position);
         }
     }
