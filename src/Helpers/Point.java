@@ -1,8 +1,10 @@
 package Helpers;
 
+import Helpers.Exceptions.InvalidCoordinates;
+
 public class Point {
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public Point(int x, int y) {
         this.x = x;
@@ -23,6 +25,21 @@ public class Point {
 
     @Override
     public String toString() {
-        return "(" + this.getX() + "," + this.getY() + ")";
+        return "(" + this.getLetterFromNumber(this.getX()) + "," + this.getY() + "),  ";
     }
+
+    private String getLetterFromNumber(int number) {
+        return switch (number) {
+            case 0 -> "A";
+            case 1 -> "B";
+            case 2 -> "C";
+            case 3 -> "D";
+            case 4 -> "E";
+            case 5 -> "F";
+            case 6 -> "G";
+            case 7 -> "H";
+            default -> "?";
+        };
+    }
+
 }

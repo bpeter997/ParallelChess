@@ -1,6 +1,7 @@
 package Game;
 
 import Game.Pieces.Piece;
+import Helpers.Exceptions.InvalidCoordinates;
 import Helpers.Exceptions.Winner;
 import Helpers.Point;
 import org.jetbrains.annotations.NotNull;
@@ -19,12 +20,12 @@ public class Game {
 
     public void startGame() throws Exception {
         table.drawTable();
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < 16; i++) {
+            for (int j = 0; j < 2; j++) {
                 try {
                     this.handle_round(j+1);
                 } catch (Winner w) {
-                    System.out.println(w);
+                    System.out.println(w.toString());
                     return;
                 }
             }
@@ -38,7 +39,7 @@ public class Game {
         boolean successFullPic = false;
         while (!successFullPic) {
             try {
-                System.out.println("Pick a piece! (x,y)");
+                System.out.println("Pick a piece player" + player + "!");
                 System.out.println("");
                 Point position = getPointFromUserINPUT(sc);
                 selectedPiece = table.pickPiece(player, position);
@@ -70,10 +71,24 @@ public class Game {
     private Point getPointFromUserINPUT(Scanner sc) throws Exception {
         String posString = sc.nextLine();
         String[] parts = posString.split(",");
-        if (parts.length != 2) throw new Exception("Invalid coordinates!");
-        int x = Integer.parseInt(parts[0]);
+        if (parts.length != 2) throw new InvalidCoordinates();
+        int x = this.convertLetterToNumber(parts[0]);
         int y = Integer.parseInt(parts[1]);
         return new Point(x,y);
+    }
+
+    private int convertLetterToNumber(String letter) throws InvalidCoordinates {
+        switch (letter) {
+            case "A": return 0;
+            case "B": return 1;
+            case "C": return 2;
+            case "D": return 3;
+            case "E": return 4;
+            case "F": return 5;
+            case "G": return 6;
+            case "H": return 7;
+        }
+        throw new InvalidCoordinates();
     }
 
     public static Game getInstance() throws Winner {

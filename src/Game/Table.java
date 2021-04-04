@@ -29,9 +29,9 @@ public class Table {
     public Piece pickPiece(int playerNumber, Point position) throws Exception {
         Piece piece = this.getPieceOnPosition(position);
         if (piece == null) throw new Exception("Empty field!");
-        System.out.println(piece.getPossibleMoveCoordinates());
+        piece.printPossibleMoves();
         if (piece.getPossibleMoveCoordinates().size() == 0) throw new Exception("You cant move this piece!");
-        System.out.println("piece player:  " + piece.getPlayer() + "   parameter player:  " + playerNumber);
+        System.out.println("");
         if (piece.getPlayer() != playerNumber) throw new InvalidPiece();
         return piece;
     }
@@ -50,13 +50,27 @@ public class Table {
     }
 
     public void drawTable() {
-        for (Piece[] pieces : table) {
+        String[] abc = {"A", "B", "C", "D", "E", "F", "G", "H"};
+        for (int i = 0; i < this.table.length; i++) {
+            if (i == 0) {
+                for (int k = 0; k < 16; k++) {
+                    if (k == 0) System.out.print("         ");
+                    if (k < 10) {
+                        System.out.print("  " + k + "   ");
+                    } else {
+                        System.out.print("  " + k + "  ");
+                    }
+                }
+                System.out.println("\n");
+            }
             System.out.println("\n");
-            for (Piece piece : pieces) {
-                if (piece == null) {
+            System.out.print(abc[i] + "        ");
+            for (int j = 0; j < this.table[i].length; j++) {
+                Piece p = this.table[i][j];
+                if (p == null) {
                     System.out.print("  0   ");
                 } else {
-                    System.out.print("  " + piece.toString() + "  ");
+                    System.out.print("  " + p.toString() + "  ");
                 }
             }
         }
@@ -77,7 +91,7 @@ public class Table {
         }
         new Rook(new Point(otherLineStartIndex, columnStartIndex), this, player, team);
         new Knight(new Point(otherLineStartIndex, columnStartIndex + 1), this, player, team);
-        kings[player-1] = new King(new Point(otherLineStartIndex, columnStartIndex + 4), this, player, team);
+        kings[player - 1] = new King(new Point(otherLineStartIndex, columnStartIndex + 4), this, player, team);
         new Bishop(new Point(otherLineStartIndex, columnStartIndex + 2), this, player, team);
         new Queen(new Point(otherLineStartIndex, columnStartIndex + 3), this, player, team);
         new Bishop(new Point(otherLineStartIndex, columnStartIndex + 5), this, player, team);
@@ -104,7 +118,7 @@ public class Table {
         }
         for (int i = 0; i < this.table.length; i++) {
             for (int j = 0; j < this.table[i].length; j++) {
-                Piece piece = this.getPieceOnPosition(new Point(i,j));
+                Piece piece = this.getPieceOnPosition(new Point(i, j));
                 if (piece == null) continue;
                 piece.calcPossibleMoveCoordinates();
                 if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == 1) player1PossibleMoves++;

@@ -1,5 +1,6 @@
 package Game.Pieces;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 import Game.Table;
@@ -33,9 +34,6 @@ public abstract class Piece {
             throw new InvalidMove();
         if (this.position.getX() == newPos.getX() && this.position.getY() == newPos.getY())
             throw new InvalidMove();
-        //Directions actualMoveDirection = this.getMoveDirection(newPos);
-//        if (!Arrays.asList(this.enabledDirections).contains(actualMoveDirection) || actualMoveDirection == Directions.INVALID)
-//            throw new InvalidMove();
         if (!this.isPossibleValue(newPos, this.possibleMoveCoordinates)) throw new InvalidMove();
         this.move(newPos);
 
@@ -64,67 +62,6 @@ public abstract class Piece {
         this.enabledDirections = new Directions[usableDirections.length];
         System.arraycopy(usableDirections, 0, this.enabledDirections, 0, usableDirections.length);
     }
-
-//    private Directions getMoveDirection(Point newPos) {
-//        Point oldPos = this.position;
-//        // moving vertically
-//        if (newPos.getX() == oldPos.getX()) {
-//            return getVerticalDirection(newPos, oldPos);
-//            // moving horizontally
-//        } else if (newPos.getY() == oldPos.getY()) {
-//            return getHorizontallyDirection(newPos, oldPos);
-//            // moving diagonally
-//        } else {
-//            return getOtherDirection(newPos, oldPos);
-//        }
-//    }
-//
-//    private Directions getOtherDirection(Point newPos, Point oldPos) {
-//        if (Math.abs(newPos.getX() - oldPos.getX()) == Math.abs(newPos.getY() - oldPos.getY())) {
-//            return getDiagonalDirections(newPos, oldPos);
-//        } else {
-//            return getKnightDirection(newPos, oldPos);
-//        }
-//    }
-//
-//    private Directions getKnightDirection(Point newPos, Point oldPos) {
-//        if ((Math.abs(newPos.getX() - oldPos.getX()) == 2 && Math.abs(newPos.getY() - oldPos.getY()) == 1) || (Math.abs(newPos.getX() - oldPos.getX()) == 1 && Math.abs(newPos.getY() - oldPos.getY()) == 2)) {
-//            return Directions.KNIGHT;
-//        }
-//        return Directions.INVALID;
-//    }
-//
-//    private Directions getDiagonalDirections(Point newPos, Point oldPos) {
-//        if (newPos.getX() > oldPos.getX()) {
-//            if (newPos.getY() > oldPos.getY()) {
-//                return (this.team == 1) ? Directions.LEFT_UP_DIAGONAL : Directions.RIGHT_DOWN_DIAGONAL;
-//            } else {
-//                return (this.team == 1) ? Directions.LEFT_DOWN_DIAGONAL : Directions.RIGHT_UP_DIAGONAL;
-//            }
-//        } else {
-//            if (newPos.getY() > oldPos.getY()) {
-//                return (this.team == 1) ? Directions.RIGHT_UP_DIAGONAL : Directions.LEFT_DOWN_DIAGONAL;
-//            } else {
-//                return (this.team == 1) ? Directions.RIGHT_DOWN_DIAGONAL : Directions.LEFT_UP_DIAGONAL;
-//            }
-//        }
-//    }
-//
-//    private Directions getHorizontallyDirection(Point newPos, Point oldPos) {
-//        if (newPos.getX() > oldPos.getX()) {
-//            return (this.team == 1) ? Directions.LEFT : Directions.RIGHT;
-//        } else {
-//            return (this.team == 1) ? Directions.RIGHT : Directions.LEFT;
-//        }
-//    }
-//
-//    private Directions getVerticalDirection(Point newPos, Point oldPos) {
-//        if (newPos.getY() > oldPos.getY()) {
-//            return (this.team == 1) ? Directions.UP : Directions.DOWN;
-//        } else {
-//            return (this.team == 1) ? Directions.DOWN : Directions.UP;
-//        }
-//    }
 
     public void calcPossibleMoveCoordinates() {
         this.possibleMoveCoordinates.clear();
@@ -194,7 +131,7 @@ public abstract class Piece {
     protected void getPossibleLeftDownPositions() {
         int minIndex = Math.min(Table.ROW_NUMBER - this.position.getX(), Table.COLUMN_NUMBER - (Table.COLUMN_NUMBER - this.position.getY()));
         ArrayList<Point> tempPoints = new ArrayList<Point>();
-        for (int i = 0; i < minIndex; i++) {
+        for (int i = 1; i <= minIndex; i++) {
             Point p = new Point(this.position.getX() + i, this.position.getY() - i);
             tempPoints.add(p);
             if (checkPosition(this.position.getX() + i, this.position.getY() - i, tempPoints)) break;
@@ -204,7 +141,7 @@ public abstract class Piece {
     protected void getPossibleLeftUpPositions() {
         int minIndex = Math.min(Table.ROW_NUMBER - (Table.ROW_NUMBER - this.position.getX()), Table.COLUMN_NUMBER - (Table.COLUMN_NUMBER - this.position.getY()));
         ArrayList<Point> tempPoints = new ArrayList<Point>();
-        for (int i = 0; i < minIndex; i++) {
+        for (int i = 1; i <= minIndex; i++) {
             Point p = new Point(this.position.getX() - i, this.position.getY() - i);
             tempPoints.add(p);
             if (checkPosition(this.position.getX() - i, this.position.getY() - i, tempPoints)) break;
@@ -214,7 +151,7 @@ public abstract class Piece {
     protected void getPossibleRightUpPositions() {
         int minIndex = Math.min(Table.ROW_NUMBER - (Table.ROW_NUMBER - this.position.getX()), Table.COLUMN_NUMBER - this.position.getY());
         ArrayList<Point> tempPoints = new ArrayList<Point>();
-        for (int i = 0; i < minIndex; i++) {
+        for (int i = 1; i <= minIndex; i++) {
             Point p = new Point(this.position.getX() - i, this.position.getY() + i);
             tempPoints.add(p);
             if (checkPosition(this.position.getX() - i, this.position.getY() + i, tempPoints)) break;
@@ -224,7 +161,7 @@ public abstract class Piece {
     protected void getPossibleRightDownPositions() {
         int minIndex = Math.min(Table.ROW_NUMBER - this.position.getX(), Table.COLUMN_NUMBER - this.position.getY());
         ArrayList<Point> tempPoints = new ArrayList<Point>();
-        for (int i = 0; i < minIndex; i++) {
+        for (int i = 1; i <= minIndex; i++) {
             Point p = new Point(this.position.getX() + i, this.position.getY() + i);
             tempPoints.add(p);
             if (checkPosition(this.position.getX() + i, this.position.getY() + i, tempPoints)) break;
@@ -238,9 +175,11 @@ public abstract class Piece {
         if (piece != null && piece.team == this.team) return true;
         if (piece instanceof King) {
             ((King) piece).setInCheck(true);
+            System.out.println(piece.player + " in check by " + this.toString());
             if (tempPoints == null) tempPoints = new ArrayList<Point>();
             tempPoints.add(this.position);
             ((King) piece).setCheckZone(new ArrayList<Point>(tempPoints));
+            System.out.println(((King) piece).getCheckZone());
             return true;
         }
         this.addPointToList(actualPos);
@@ -274,5 +213,13 @@ public abstract class Piece {
 
     public ArrayList<Point> getPossibleMoveCoordinates() {
         return possibleMoveCoordinates;
+    }
+
+    public void printPossibleMoves() {
+        System.out.println("Possible moves: ");
+        for (Point possibleMoveCoordinate : possibleMoveCoordinates) {
+            System.out.print(possibleMoveCoordinate.toString());
+        }
+        System.out.println();
     }
 }
