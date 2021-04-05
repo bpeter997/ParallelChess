@@ -1,12 +1,10 @@
-package Game.Pieces;
+package Pieces;
 
 import Game.Table;
 import Helpers.Directions;
 import Helpers.Point;
-import com.diogonunes.jcolor.Attribute;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
-import static com.diogonunes.jcolor.Attribute.RED_TEXT;
 
 public class Pawn extends Piece {
     private final Point originalPosition;
@@ -81,6 +79,6 @@ public class Pawn extends Piece {
 
     @Override
     public String toString() {
-        return colorize("P" + this.player, this.getColorsByPlayerId(this.player));
+        return colorize("♙", this.getColorsByPlayerId(this.player));
     }
 }

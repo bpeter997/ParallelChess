@@ -1,4 +1,4 @@
-package Game.Pieces;
+package Pieces;
 
 import Game.Table;
 import Helpers.Directions;
@@ -21,6 +21,6 @@ public class Bishop extends Piece {
 
     @Override
     public String toString() {
-        return colorize("B" + this.player, this.getColorsByPlayerId(this.player));
+        return colorize("♗", this.getColorsByPlayerId(this.player));
     }
 }

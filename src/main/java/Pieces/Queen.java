@@ -1,4 +1,4 @@
-package Game.Pieces;
+package Pieces;
 
 import Game.Table;
 import Helpers.Directions;
@@ -23,7 +23,7 @@ public class Queen extends Piece {
 
     @Override
     public String toString() {
-        return colorize("Q" + this.player, this.getColorsByPlayerId(this.player));
+        return colorize("♕", this.getColorsByPlayerId(this.player));
     }
 
 }

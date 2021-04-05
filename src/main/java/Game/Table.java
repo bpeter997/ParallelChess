@@ -1,6 +1,6 @@
 package Game;
 
-import Game.Pieces.*;
+import Pieces.*;
 import Helpers.Exceptions.InvalidPiece;
 import Helpers.Exceptions.Winner;
 import Helpers.Point;
@@ -56,7 +56,7 @@ public class Table {
                 for (int k = 0; k < 16; k++) {
                     if (k == 0) System.out.print("         ");
                     if (k < 10) {
-                        System.out.print("  " + k + "   ");
+                        System.out.print("  " + k + "  ");
                     } else {
                         System.out.print("  " + k + "  ");
                     }
@@ -68,7 +68,7 @@ public class Table {
             for (int j = 0; j < this.table[i].length; j++) {
                 Piece p = this.table[i][j];
                 if (p == null) {
-                    System.out.print("  0   ");
+                    System.out.print("  0  ");
                 } else {
                     System.out.print("  " + p.toString() + "  ");
                 }
@@ -82,7 +82,7 @@ public class Table {
         this.initPlayer(2, 2, 6, 7, 0);
         this.initPlayer(3, 1, 1, 0, 8);
         this.initPlayer(4, 2, 6, 7, 8);
-        this.recalculatePossibleMoves();
+        this.recalculatePossibleMoves(5);
     }
 
     private void initPlayer(int player, int team, int pawnLineStartIndex, int otherLineStartIndex, int columnStartIndex) {
@@ -121,25 +121,18 @@ public class Table {
         }
     }
 
-    public void recalculatePossibleMoves() throws Winner {
-        int player1PossibleMoves = 0;
-        int player2PossibleMoves = 0;
-        int player3PossibleMoves = 0;
-        int player4PossibleMoves = 0;
+    public void recalculatePossibleMoves(int player) throws Winner {
+        int possibleMoves = 0;
 
         for (int i = 0; i < this.table.length; i++) {
             for (int j = 0; j < this.table[i].length; j++) {
                 Piece piece = this.getPieceOnPosition(new Point(i, j));
                 if (piece == null) continue;
                 piece.calcPossibleMoveCoordinates();
-                if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == 1) player1PossibleMoves++;
-                if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == 2) player2PossibleMoves++;
-                if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == 3) player3PossibleMoves++;
-                if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == 4) player4PossibleMoves++;
+                if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == player) possibleMoves++;
             }
         }
-        if (player1PossibleMoves == 0 || player3PossibleMoves == 0) throw new Winner(1);
-        if (player2PossibleMoves == 0 || player4PossibleMoves == 0) throw new Winner(2);
+        if (player < 5 && possibleMoves == 0) throw new Winner(player % 2 == 0 ? 2 : 1);
     }
 
     public King[] getKings() {

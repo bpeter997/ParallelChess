@@ -1,4 +1,4 @@
-package Game.Pieces;
+package Pieces;
 
 import Game.Table;
 import Helpers.Directions;
@@ -75,7 +75,7 @@ public class King extends Piece {
 
     @Override
     public String toString() {
-        return colorize("K" + this.player, this.getColorsByPlayerId(this.player));
+        return colorize("♔", this.getColorsByPlayerId(this.player));
     }
 
     public boolean isInCheck() {

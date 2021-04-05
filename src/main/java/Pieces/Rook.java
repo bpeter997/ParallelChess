@@ -1,4 +1,4 @@
-package Game.Pieces;
+package Pieces;
 
 import Game.Table;
 import Helpers.Directions;
@@ -6,11 +6,12 @@ import Helpers.Point;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 
-public class Knight extends Piece {
+public class Rook extends Piece {
 
-    public Knight(Point position, Table table, int player, int team) {
+    public Rook(Point position, Table table, int player, int team) {
         super(position, table, player, team);
-        Directions[] tempArr = {Directions.KNIGHT};
+        Directions[] tempArr = { Directions.DOWN, Directions.LEFT,
+                Directions.RIGHT, Directions.UP };
         this.fillEnabledDirectionsArray(tempArr);
     }
 
@@ -21,6 +22,6 @@ public class Knight extends Piece {
 
     @Override
     public String toString() {
-        return colorize("H" + this.player, this.getColorsByPlayerId(this.player));
+        return colorize("♖", this.getColorsByPlayerId(this.player));
     }
 }
