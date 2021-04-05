@@ -51,7 +51,7 @@ public abstract class Piece {
         table.movePieceToPosition(this, newPos);
     }
 
-    private boolean isPossibleValue(Point value, ArrayList<Point> arrayList) {
+    protected boolean isPossibleValue(Point value, ArrayList<Point> arrayList) {
         for (Point possibleMoveCoordinate : arrayList) {
             if (value.isEqual(possibleMoveCoordinate)) return true;
         }
@@ -179,7 +179,6 @@ public abstract class Piece {
             if (tempPoints == null) tempPoints = new ArrayList<Point>();
             tempPoints.add(this.position);
             ((King) piece).setCheckZone(new ArrayList<Point>(tempPoints));
-            System.out.println(((King) piece).getCheckZone());
             return true;
         }
         this.addPointToList(actualPos);
@@ -189,7 +188,9 @@ public abstract class Piece {
     protected void addPointToList(Point position) {
         if (position.getX() >= 0 && position.getX() < Table.ROW_NUMBER && position.getY() >= 0 && position.getY() < Table.COLUMN_NUMBER) {
             King myKing = table.getKings()[this.player-1];
-            if (myKing.isInCheck() && !this.isPossibleValue(position, myKing.getCheckZone())) return;
+            if (myKing.isInCheck()) {
+                if (!this.isPossibleValue(position, myKing.getCheckZone())) return;
+            }
             this.possibleMoveCoordinates.add(position);
         }
     }

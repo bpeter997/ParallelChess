@@ -106,16 +106,27 @@ public class Table {
         return INSTANCE;
     }
 
+    public void analyzeCheck() {
+        for (King king : kings) {
+            king.setInCheck(false);
+            king.getCheckZone().clear();
+        }
+
+        for (int i = 0; i < this.table.length; i++) {
+            for (int j = 0; j < this.table[i].length; j++) {
+                Piece piece = this.getPieceOnPosition(new Point(i, j));
+                if (piece == null) continue;
+                piece.calcPossibleMoveCoordinates();
+            }
+        }
+    }
+
     public void recalculatePossibleMoves() throws Winner {
         int player1PossibleMoves = 0;
         int player2PossibleMoves = 0;
         int player3PossibleMoves = 0;
         int player4PossibleMoves = 0;
 
-        for (King king : kings) {
-            king.setInCheck(false);
-            king.getCheckZone().clear();
-        }
         for (int i = 0; i < this.table.length; i++) {
             for (int j = 0; j < this.table[i].length; j++) {
                 Piece piece = this.getPieceOnPosition(new Point(i, j));
@@ -127,6 +138,7 @@ public class Table {
                 if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == 4) player4PossibleMoves++;
             }
         }
+        System.out.println(player1PossibleMoves + " " + player2PossibleMoves + " " + player3PossibleMoves + " " + player4PossibleMoves);
         if (player1PossibleMoves == 0 || player3PossibleMoves == 0) throw new Winner(1);
         if (player2PossibleMoves == 0 || player4PossibleMoves == 0) throw new Winner(2);
     }

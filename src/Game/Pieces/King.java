@@ -13,7 +13,7 @@ public class King extends Piece {
 
     public King(Point position, Table table, int player, int team) {
         super(position, table, player, team);
-        this.inCheck = true;
+        this.inCheck = false;
         this.checkZone = new ArrayList<Point>();
         Directions[] tempArr = {Directions.LEFT_DOWN_DIAGONAL, Directions.LEFT_UP_DIAGONAL,
                 Directions.RIGHT_DOWN_DIAGONAL, Directions.RIGHT_UP_DIAGONAL, Directions.DOWN, Directions.LEFT,
@@ -22,9 +22,54 @@ public class King extends Piece {
     }
 
     @Override
-    public void tryMove(Point newPos) throws Exception {
-        super.tryMove(newPos);
+    protected void getPossibleLeftPositions() {
+        checkPosition(this.position.getX(), this.position.getY() - 1, null);
     }
+
+    @Override
+    protected void getPossibleRightPositions() {
+        checkPosition(this.position.getX(), this.position.getY() + 1, null);
+    }
+
+    @Override
+    protected void getPossibleDownPositions() {
+        checkPosition(this.position.getX() + 1, this.position.getY(), null);
+    }
+
+    @Override
+    protected void getPossibleUpPositions() {
+        checkPosition(this.position.getX() - 1, this.position.getY(), null);
+    }
+
+    @Override
+    protected void getPossibleLeftDownPositions() {
+        checkPosition(this.position.getX() + 1, this.position.getY() - 1, null);
+    }
+
+    @Override
+    protected void getPossibleLeftUpPositions() {
+        checkPosition(this.position.getX() - 1, this.position.getY() - 1, null);
+    }
+
+    @Override
+    protected void getPossibleRightUpPositions() {
+        checkPosition(this.position.getX() - 1, this.position.getY() + 1, null);
+    }
+
+    @Override
+    protected void getPossibleRightDownPositions() {
+        checkPosition(this.position.getX() + 1, this.position.getY() + 1, null);
+    }
+
+    protected void addPointToList(Point position) {
+        if (position.getX() >= 0 && position.getX() < Table.ROW_NUMBER && position.getY() >= 0 && position.getY() < Table.COLUMN_NUMBER) {
+            if (this.isInCheck()) {
+                if (this.isPossibleValue(position, getCheckZone())) return;
+            }
+            this.possibleMoveCoordinates.add(position);
+        }
+    }
+
 
     @Override
     public String toString() {

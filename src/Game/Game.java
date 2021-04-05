@@ -6,6 +6,7 @@ import Helpers.Exceptions.Winner;
 import Helpers.Point;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Game {
@@ -58,10 +59,12 @@ public class Game {
                 selectedPiece.tryMove(position);
                 successFullMove = true;
                 table.drawTable();
+                table.analyzeCheck();
                 table.recalculatePossibleMoves();
             } catch (Winner w) {
                 throw w;
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println(e.toString());
             }
         }
