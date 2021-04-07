@@ -177,8 +177,9 @@ public abstract class Piece {
         Piece piece = table.getPieceOnPosition(actualPos);
         if (piece != null && piece.team == this.team) return true;
         if (piece instanceof King) {
+            if(((King) piece).isInCheck()) return true;
             ((King) piece).setInCheck(true);
-            System.out.println(piece.player + " in check by " + this.toString());
+            System.out.println(piece.toString() + " in check by " + this.toString());
             if (tempPoints == null) tempPoints = new ArrayList<>();
             tempPoints.add(this.position);
             ((King) piece).setCheckZone(new ArrayList<>(tempPoints));

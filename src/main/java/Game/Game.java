@@ -25,7 +25,7 @@ public class Game {
         }
     }
 
-    public void startGame() throws Exception {
+    public void startGame() {
         table.drawTable();
         for (Player player : players) {
             player.start();

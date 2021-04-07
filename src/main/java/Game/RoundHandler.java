@@ -126,7 +126,4 @@ public class RoundHandler {
         return isCheckMate;
     }
 
-    public void setCheckMate(boolean checkMate) {
-        isCheckMate = checkMate;
-    }
 }
