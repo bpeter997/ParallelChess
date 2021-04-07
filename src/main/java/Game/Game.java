@@ -7,14 +7,14 @@ public class Game {
     private static Game INSTANCE = null;
 
     private final Table table;
-   //private final RoundHandler roundHandler;
     private final Player[] players;
 
     private Game() throws Winner {
         this.table = Table.getInstance();
-        this.players = new Player[4];
+        int playersNumber = 4;
+        this.players = new Player[playersNumber];
         RoundHandler.getInstance(players);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < playersNumber; i++) {
              Player player = new Player(i+1);
              players[i] = player;
              if (i!=0) {

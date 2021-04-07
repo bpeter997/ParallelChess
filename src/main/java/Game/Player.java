@@ -14,12 +14,7 @@ public class Player extends Thread {
     @Override
     public void run() {
         while (!this.roundHandler.isCheckMate()) {
-            try {
                 this.roundHandler.handle_round(this.playerId);
-            } catch (Winner w) {
-                System.out.println(w.toString());
-                this.roundHandler.setCheckMate(true);
-            }
         }
     }
 }

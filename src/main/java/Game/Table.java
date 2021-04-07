@@ -58,7 +58,7 @@ public class Table {
                     if (k < 10) {
                         System.out.print("  " + k + "  ");
                     } else {
-                        System.out.print("  " + k + "  ");
+                        System.out.print("  " + k + " ");
                     }
                 }
                 System.out.println("\n");

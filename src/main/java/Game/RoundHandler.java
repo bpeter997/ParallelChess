@@ -20,9 +20,10 @@ public class RoundHandler {
     private RoundHandler(Player[] players) throws Winner {
         this.table = Table.getInstance();
         this.players = players;
+        this.isCheckMate = false;
     }
 
-    public synchronized void handle_round(int player) throws Winner {
+    public synchronized void handle_round(int player) {
         // pick piece
         while (Thread.currentThread().getPriority() == Thread.MIN_PRIORITY) {
             try {
@@ -32,11 +33,12 @@ public class RoundHandler {
             }
         }
 
-        Piece selectedPiece = null;
-        Scanner sc = new Scanner(System.in);
-        selectedPiece = handle_selectPiece(player, selectedPiece, sc);
-        handle_movePiece(selectedPiece, sc);
-
+        if (!this.isCheckMate) {
+            Piece selectedPiece = null;
+            Scanner sc = new Scanner(System.in);
+            selectedPiece = handle_selectPiece(player, selectedPiece, sc);
+            if (selectedPiece != null) handle_movePiece(selectedPiece, sc);
+        }
         players[callNumber % players.length].setPriority(Thread.MIN_PRIORITY);
         callNumber++;
         players[callNumber % players.length].setPriority(Thread.MAX_PRIORITY);
@@ -62,7 +64,7 @@ public class RoundHandler {
         notifyAll();
     }
 
-    private Piece handle_selectPiece(int player, Piece selectedPiece, Scanner sc) throws Winner {
+    private Piece handle_selectPiece(int player, Piece selectedPiece, Scanner sc) {
         boolean successFullPic = false;
         while (!successFullPic) {
             try {
@@ -74,7 +76,9 @@ public class RoundHandler {
                 selectedPiece = table.pickPiece(player, position);
                 successFullPic = true;
             } catch (Winner w) {
-                throw w;
+                System.out.println(w.toString());
+                this.isCheckMate = true;
+                successFullPic = true;
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
