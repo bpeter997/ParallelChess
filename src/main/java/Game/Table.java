@@ -132,7 +132,7 @@ public class Table {
                 if (piece.getPossibleMoveCoordinates().size() != 0 && piece.getPlayer() == player) possibleMoves++;
             }
         }
-        if (player < 5 && possibleMoves == 0) throw new Winner(player % 2 == 0 ? 2 : 1);
+        if (player < 5 && possibleMoves == 0) throw new Winner(player % 2 == 0 ? 1 : 2);
     }
 
     public King[] getKings() {
